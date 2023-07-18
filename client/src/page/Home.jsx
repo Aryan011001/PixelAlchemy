@@ -36,6 +36,7 @@ const Home = () => {
 
       if (response.ok) {
         const result = await response.json();
+        // reverse liya cuz hamein new post top par lana h
         setAllPosts(result.data.reverse());
       }
     } catch (err) {
@@ -61,7 +62,7 @@ const Home = () => {
             item.prompt.toLowerCase().includes(searchText.toLowerCase())
         );
         setSearchedResults(searchResult);
-      }, 500)
+      }, 500) //500ms ke andar agr likha toh new response nhi hoga, ussi mein chalega
     );
   };
 

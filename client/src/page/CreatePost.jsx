@@ -5,6 +5,7 @@ import { preview } from '../assets';
 import { getRandomPrompt } from '../utils';
 import { FormField, Loader } from '../components';
 
+
 const CreatePost = () => {
   const navigate = useNavigate();
 
@@ -52,116 +53,124 @@ const CreatePost = () => {
     }
   };
 
-  
+
 
 
   // backend complete karne ke baad ye hi kar payenge
-   const handleSubmit = async (e) => {
-     e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-     if (form.prompt && form.photo) {
-       setLoading(true);
-       try {
-         const response = await fetch(
-           "http://localhost:8080/api/v1/post",
-           {
-             method: "POST",
-             headers: {
-               "Content-Type": "application/json",
-             },
-             body: JSON.stringify({ ...form }),
-           }
-         );
+    if (form.prompt && form.photo) {
+      setLoading(true);
+      try {
+        const response = await fetch(
+          "http://localhost:8080/api/v1/post",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ ...form }),
+          }
+        );
 
-         await response.json();
-         alert("Success");
-         navigate("/");
-       } catch (err) {
-         alert(err);
-       } finally {
-         setLoading(false);
-       }
-     } else {
-       alert("Please generate an image with proper details");
-     }
-   };
+        await response.json();
+        alert("Success");
+        navigate("/");
+      } catch (err) {
+        alert(err);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      alert("Please generate an image with proper details");
+    }
+  };
 
   return (
-    <section>
-      <div>
+    <section className="flex flex-col items-center h-screen" style={{
+      background: "url('../bg_image.png')",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+    }}>
+
+      <div className="text-center">
         <h1 className="font-extrabold text-[#222328] text-[32px]">Create</h1>
-        <p className="mt-2 text-[#666e75] text-[14px] max-w-[500px]">Generate an imaginative image through DALL-E AI and share it with the community</p>
+        <p className="mt-2 text-[#666e75] text-[14px] max-w-[500px]">Generate an imaginative image through AI and share it with the community</p>
       </div>
 
-      <form className="mt-16 max-w-3xl" onSubmit={handleSubmit}>
-        <div className="flex flex-col gap-5">
-          <FormField
-            labelName="Your Name"
-            type="text"
-            name="name"
-            placeholder="Ex., john doe"
-            value={form.name}
-            handleChange={handleChange}
-          />
+      <div className="w-full max-w-3xl mt-16">
+        <form className="flex flex-col gap-5"onSubmit={handleSubmit}>
+          <div className="flex flex-col gap-5">
+            <FormField
+              labelName="Your Name"
+              type="text"
+              name="name"
+              placeholder="Ex., john doe"
+              value={form.name}
+              handleChange={handleChange}
+            />
 
-          <FormField
-            labelName="Prompt"
-            type="text"
-            name="prompt"
-            placeholder="An Impressionist oil painting of sunflowers in a purple vase…"
-            value={form.prompt}
-            handleChange={handleChange}
-            isSurpriseMe
-            handleSurpriseMe={handleSurpriseMe}
-          />
+            <FormField
+              labelName="Prompt"
+              type="text"
+              name="prompt"
+              placeholder="An Impressionist oil painting of sunflowers in a purple vase…"
+              value={form.prompt}
+              handleChange={handleChange}
+              isSurpriseMe
+              handleSurpriseMe={handleSurpriseMe}
+            />
 
-          {/* for ai img generation but also showing preview of img */}
-          <div className="relative bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-64 p-3 h-64 flex justify-center items-center">
-            {form.photo ? (
-              <img
-                src={form.photo}
-                alt={form.prompt}
-                className="w-full h-full object-contain"
-              />
-            ) : (
-              <img
-                src={preview}
-                alt="preview"
-                className="w-9/12 h-9/12 object-contain opacity-40"
-              />
-            )}
+            {/* for ai img generation but also showing preview of img */}
+            <div className="relative bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-64 p-3 h-64 flex justify-center items-center">
+              {form.photo ? (
+                <img
+                  src={form.photo}
+                  alt={form.prompt}
+                  className="w-full h-full object-contain"
+                />
+              ) : (
+                <img
+                  src={preview}
+                  alt="preview"
+                  className="w-9/12 h-9/12 object-contain opacity-40"
+                />
+              )}
 
-            {/* loader hai */}
-            {generatingImg && (
-              <div className="absolute inset-0 z-0 flex justify-center items-center bg-[rgba(0,0,0,0.5)] rounded-lg">
-                <Loader />
-              </div>
-            )}
+              {/* loader hai */}
+              {generatingImg && (
+                <div className="absolute inset-0 z-0 flex justify-center items-center bg-[rgba(0,0,0,0.5)] rounded-lg">
+                  <Loader />
+                </div>
+              )}
+            </div>
+
           </div>
 
-        </div>
+          {/* for sbumitting */}
+          <div className="mt-5 flex gap-5">
+            <button
+              type="button"
+              onClick={generateImage}
+              className=" text-white bg-green-700 font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+            >
+              {generatingImg ? 'Generating...' : 'Generate'}
+            </button>
+          </div>
 
-        {/* for sbumitting */}
-        <div className="mt-5 flex gap-5">
-          <button
-            type="button"
-            onClick={generateImage}
-            className=" text-white bg-green-700 font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center"
-          >
-            {generatingImg ? 'Generating...' : 'Generate'}
-          </button>
-        </div>
+          <div className="mt-10">
+            <p className="mt-2 text-[#666e75] text-[14px]">** Once you have created the image you want, you can share it with others in the community **</p>
+            <button
+              type="submit"
+              className="mt-3 text-white bg-[#6469ff] font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+            >
+              {loading ? 'Sharing...' : 'Share with the Community'}
+            </button>
+          </div>
+        </form>
+      </div>
 
-        <div className="mt-10">
-          <p className="mt-2 text-[#666e75] text-[14px]">** Once you have created the image you want, you can share it with others in the community **</p>
-          <button
-            type="submit"
-            className="mt-3 text-white bg-[#6469ff] font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center"
-          >
-            {loading ? 'Sharing...' : 'Share with the Community'}
-          </button>
-        </div>
-      </form>
     </section>
   )
 }
